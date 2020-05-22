@@ -1,0 +1,106 @@
+<html>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+	<style>
+	body {
+	  background: #20262E;
+	  padding: 20px;
+	  font-family: Helvetica;
+	}
+
+	#app {
+	  background: #fff;
+	  border-radius: 4px;
+	  padding: 20px;
+	  transition: all 0.2s;
+	}
+
+	li {
+	  margin: 8px 0;
+	}
+
+	h2 {
+	  font-weight: bold;
+	  margin-bottom: 15px;
+	}
+
+	del {
+	  color: rgba(0, 0, 0, 0.3);
+	}
+	</style>
+<div id="app">
+  <h2>Todos:</h2>
+  <input type="text" v-model=message>  
+  <input type="submit" @click="addTodo()">	
+  <ol>
+    <li v-for="todo in todos">
+      <label>
+        <input type="checkbox" v-on:change="toggle(todo)" v-bind:checked="todo.done">
+
+        <del v-if="todo.done">
+          {{ todo.text }}
+        </del>
+        <span v-else>
+          {{ todo.text }}
+        </span>
+      </label>
+    </li>
+  </ol>
+</div>
+<script>
+
+  var demo = new Vue({
+  el: "#app",
+  data: {
+    todos: [
+      { text: "Learn JavaScript", done: false },
+      { text: "Learn Vue", done: false },
+      { text: "Play around in JSFiddle", done: true },
+      { text: "Build something awesome", done: true }
+    ],
+    message : '',	
+  },
+ mounted() {
+    if (localStorage.getItem('todos')) {
+      try {
+        this.todos = JSON.parse(localStorage.getItem('todos'));
+      } catch(e) {
+        localStorage.removeItem('todos');
+      }
+    }
+  },	 
+  	
+  methods: {
+  	toggle(todo){
+
+var todos = JSON.parse(localStorage.todos);
+
+for (var i = 0; i < todos.length; i++) {
+console.log(todos[i].text);
+   if(todo.text === todos[i].text){//look for match with name
+       this.todos[i].done = !todo.done;  //add two
+       break;  //exit loop since you found the person
+   }
+}
+
+        this.message = '';
+	this.saveTodo();
+    },
+	addTodo(){
+	if(this.message){
+          this.todos.push({text: this.message, done: false});
+          this.message = '';
+	  this.saveTodo();
+       }
+    },
+    
+      saveTodo(){
+	 const parsed = JSON.stringify(this.todos);
+         localStorage.setItem('todos', parsed);	 
+	}		
+
+  }
+})
+
+
+</script>
+</html>
